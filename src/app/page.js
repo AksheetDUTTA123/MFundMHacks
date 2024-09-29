@@ -1,69 +1,80 @@
-'use client'
-import Image from "next/image";
-import React, { useState, useContext, useEffect } from 'react'
-import { CrowdFundingContext } from '../../Context/CrowdFunding'
+'use client';
+import React, { useState, useContext, useEffect } from 'react';
+import { CrowdFundingContext } from '../../Context/CrowdFunding';
 
 export default function Home() {
-  const { createCampaign, error, getCampaigns, currentAccount, connectWallet } = useContext(CrowdFundingContext)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState('')
-  const [deadline, setDeadline] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [campaigns, setCampaigns] = useState([])
+  const { createCampaign, getCampaigns, currentAccount, connectWallet } = useContext(CrowdFundingContext);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [campaigns, setCampaigns] = useState([]); // Holds all campaigns
+
+  // Fetch all campaigns initially
   const fetchCampaigns = async () => {
     try {
-      const data = await getCampaigns()
-      setCampaigns(data)
+      const data = await getCampaigns();
+      setCampaigns(data);
     } catch (error) {
-      console.error('Error while fetching campaigns:', error)
-      setErrorMessage('Error while fetching campaigns')
+      console.error('', error);
+      setErrorMessage('');
     }
-  }
+  };
 
   useEffect(() => {
-    fetchCampaigns()
-  }, [])
+    fetchCampaigns();
+  }, []);
 
+  // Handle form submission for new donation
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const campaign = {
+    e.preventDefault();
+    const newCampaign = {
       title,
       description,
       amount,
-      deadline
-    }
+      deadline,
+    };
+
     try {
-      await createCampaign(campaign)
-      setErrorMessage('')
-      setTitle('')
-      setDescription('')
-      setAmount('')
-      setDeadline('')
-      fetchCampaigns()
+      await createCampaign(newCampaign);
+      setErrorMessage('');
+      
+      // Add new campaign to the top of the existing campaigns
+      setCampaigns([newCampaign, ...campaigns]);
+
+      // Reset form values
+      setTitle('');
+      setDescription('');
+      setAmount('');
+      setDeadline('');
     } catch (error) {
-      console.error('Error while creating campaign:', error)
-      setErrorMessage(error.message || 'Error while creating campaign')
+      console.error('', error);
+      setErrorMessage(error.message || '');
     }
-  }
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>MFund</h1>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px', color: '#D4E300', textAlign: 'center' }}>MFund</h1>
+
       {!currentAccount ? (
-        <button
-          style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer', marginBottom: '20px' }}
-          onClick={connectWallet}
-        >
-          Connect Wallet
-        </button>
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <button
+            style={{ backgroundColor: '#007bff', color: 'yellow', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
+            onClick={connectWallet}
+          >
+            Connect Wallet
+          </button>
+        </div>
       ) : (
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px', textAlign: 'center' }}>
           <p style={{ marginTop: '10px' }}>Connected Wallet: {currentAccount}</p>
-         
         </div>
       )}
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Create Campaign</h2>
+
+      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Make Donation</h2>
+
       <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
         <div style={{ marginBottom: '10px' }}>
           <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Title:</label>
@@ -74,6 +85,7 @@ export default function Home() {
             onChange={e => setTitle(e.target.value)}
           />
         </div>
+
         <div style={{ marginBottom: '10px' }}>
           <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Description:</label>
           <textarea
@@ -82,6 +94,7 @@ export default function Home() {
             onChange={e => setDescription(e.target.value)}
           />
         </div>
+
         <div style={{ marginBottom: '10px' }}>
           <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Amount:</label>
           <input
@@ -91,6 +104,7 @@ export default function Home() {
             onChange={e => setAmount(e.target.value)}
           />
         </div>
+
         <div style={{ marginBottom: '10px' }}>
           <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Deadline:</label>
           <input
@@ -100,22 +114,26 @@ export default function Home() {
             onChange={e => setDeadline(e.target.value)}
           />
         </div>
+
         <button
           type='submit'
-          style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer', marginTop: '10px' }}
+          style={{ backgroundColor: '#007bff', color: 'yellow', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer', marginTop: '10px' }}
         >
-          Create Campaign
+          Make Donation
         </button>
         {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
       </form>
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Campaigns</h2>
+
+      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Donations</h2>
+
       <div>
         {campaigns.map((campaign, index) => (
           <div key={index} style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '10px', marginTop: '20px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 'bold' }}>{campaign.title}</h3>
-            <p>Description: {campaign.description}</p>
-            <p>Target Amount: {campaign.target}</p>
-            <p>Deadline: {new Date(campaign.deadline).toLocaleDateString()}</p>
+            <p><strong>Description:</strong> {campaign.description}</p>
+            <p><strong>Target Amount:</strong> {campaign.amount}</p> 
+            <p><strong>Deadline:</strong> {new Date(campaign.deadline).toLocaleDateString()}</p>
+            <p><strong>Send money to wallet address:</strong> {currentAccount}</p>
           </div>
         ))}
       </div>

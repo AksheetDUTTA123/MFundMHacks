@@ -41,7 +41,7 @@ export const CrowdFundingProvider = ({ children }) => {
   };
 
   const getCampaigns = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
+    const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
     const contract = fetchContract(provider);
     const campaigns = await contract.getCampaigns();
     const parsedCampaigns = campaigns.map((campaign, i) => ({
