@@ -11,6 +11,16 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState('');
   const [campaigns, setCampaigns] = useState([]); // Holds all campaigns
 
+  useEffect(() => {
+    // Set body background color to #0B103A
+    document.body.style.backgroundColor = '#0B103A';
+    
+    // Cleanup function to reset the background color when the component unmounts
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, []);
+
   // Fetch all campaigns initially
   const fetchCampaigns = async () => {
     try {
@@ -56,12 +66,12 @@ export default function Home() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px', color: '#D4E300', textAlign: 'center' }}>MFund</h1>
+      <h1 style={{ fontSize: '50px', fontWeight: 'bold', marginBottom: '10px', color: '#D4E300', textAlign: 'center' }}>MFund</h1>
 
       {!currentAccount ? (
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <button
-            style={{ backgroundColor: '#007bff', color: 'yellow', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
+            style={{ backgroundColor: 'yellow', color: '#0B103A', border: 'none', padding: '10px 20px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
             onClick={connectWallet}
           >
             Connect Wallet
@@ -69,15 +79,15 @@ export default function Home() {
         </div>
       ) : (
         <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-          <p style={{ marginTop: '10px' }}>Connected Wallet: {currentAccount}</p>
+          <p style={{ color: 'yellow', marginTop: '10px' }}>Connected Wallet: {currentAccount}</p>
         </div>
       )}
 
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Make Donation</h2>
+      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px', color: 'yellow' }}>Make Donation</h2>
 
       <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Title:</label>
+          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px', color: 'yellow' }}>Title:</label>
           <input
             style={{ width: '100%', padding: '10px' }}
             type='text'
@@ -87,7 +97,7 @@ export default function Home() {
         </div>
 
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Description:</label>
+          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px', color: 'yellow' }}>Description:</label>
           <textarea
             style={{ width: '100%', padding: '10px' }}
             value={description}
@@ -96,7 +106,7 @@ export default function Home() {
         </div>
 
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Amount:</label>
+          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px', color: 'yellow' }}>Amount:</label>
           <input
             style={{ width: '100%', padding: '10px' }}
             type='number'
@@ -106,7 +116,7 @@ export default function Home() {
         </div>
 
         <div style={{ marginBottom: '10px' }}>
-          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px' }}>Deadline:</label>
+          <label style={{ display: 'block', fontSize: '16px', marginBottom: '5px', color: 'yellow' }}>Deadline:</label>
           <input
             style={{ width: '100%', padding: '10px' }}
             type='date'
@@ -117,18 +127,18 @@ export default function Home() {
 
         <button
           type='submit'
-          style={{ backgroundColor: '#007bff', color: 'yellow', border: 'none', padding: '10px 20px', fontSize: '16px', cursor: 'pointer', marginTop: '10px' }}
+          style={{ backgroundColor: 'yellow', color: '#0B103A', border: 'none', padding: '10px 20px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}
         >
           Make Donation
         </button>
         {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
       </form>
 
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Donations</h2>
+      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px', color: 'yellow' }}>Donations</h2>
 
       <div>
         {campaigns.map((campaign, index) => (
-          <div key={index} style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '10px', marginTop: '20px' }}>
+          <div key={index} style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '10px', marginTop: '20px', color: 'yellow' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 'bold' }}>{campaign.title}</h3>
             <p><strong>Description:</strong> {campaign.description}</p>
             <p><strong>Target Amount:</strong> {campaign.amount}</p> 
